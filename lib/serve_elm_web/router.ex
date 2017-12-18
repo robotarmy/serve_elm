@@ -18,6 +18,7 @@ defmodule ServeElmWeb.Router do
 
     get "/", PageController, :index
     get "/main", PageController, :main
+    get "/cached", PageController, :cached
   end
 
   # Other scopes may use custom stacks.

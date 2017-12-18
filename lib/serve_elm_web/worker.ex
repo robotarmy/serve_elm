@@ -51,7 +51,6 @@ defmodule ServeElmWeb.Worker do
 
 
   def execute_render(_name) do
-    IO.puts Execjs.eval(~s(var a = "a"; a + "b"))
     context =  Execjs.compile(render_template())
     json = Execjs.call(context, "ElmRender", [])
     result = cond do
@@ -91,14 +90,14 @@ async function __elm_render__() {
                 // Model.Contact
                 {
                     id: 333,
-                    first_name: "Robot",
-                    last_name: "Army",
+                    first_name: "Robot Army",
+                    last_name: "Made",
                     gender: 3,
                     birth_date: "11/20/1979",
                     location: "home",
                     phone_number: "222-222-2222",
                     email: "robotarmy@ram9.cc",
-                    headline: "Robot Army Made",
+                    headline: "RAM9.CC",
                     picture: "https://avatars0.githubusercontent.com/u/178963?s=400&v=4"
                 }, {
                     id: 123,
@@ -128,7 +127,7 @@ async function __elm_render__() {
     "StaticMain.viewWithModel",
     options).then(function(html) {
     resolve(html);
-    console.log(html)
+    //console.log(html)
     });
     });
     } catch(error) {
