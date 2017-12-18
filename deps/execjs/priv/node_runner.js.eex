@@ -1,0 +1,40 @@
+const fs = require('fs');
+(function(program, runner) {
+    fs.fstat(3,function(err,stat){
+        console.log("33")
+        console.log(err)
+        console.log("33")
+        console.log(stat)
+        console.log("33")
+    })
+    fs.fstat(4,function(err,stat){
+        console.log("44")
+        console.log(err)
+        console.log("44")
+        console.log(stat)
+        console.log("44")
+    })
+
+    runner(program);
+
+})(
+    function() {
+        return <%= source %>;
+    }
+    , async function(program) {
+        let result;
+        try {
+            result = await program();
+            try {
+                if (result === undefined) {
+                    fs.writeSync(4,'["ok"]');
+                } else {
+                    fs.writeSync(4,JSON.stringify(['ok', result]));
+                }
+            } catch (err) {
+               fs.writeSync(4, '["err"]');
+            }
+        } catch (err) {
+            fs.writeSync(4,JSON.stringify(['err', '' + err]));
+        }
+    });
