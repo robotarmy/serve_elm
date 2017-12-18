@@ -1,0 +1,11 @@
+{
+  "name": "serve_elm",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "co": "^4.6.0",
+    "elm-static-html": "^1.3.2",
+    "elm-static-html-lib": "^0.0.9-alpha.2"
+  }
+}

@@ -1,0 +1,46 @@
+var _user$project$Routing$toPath = function (route) {
+	var _p0 = route;
+	switch (_p0.ctor) {
+		case 'HomeIndexRoute':
+			return '/';
+		case 'ShowContactRoute':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'/contacts/',
+				_elm_lang$core$Basics$toString(_p0._0));
+		default:
+			return '/not-found';
+	}
+};
+var _user$project$Routing$NotFoundRoute = {ctor: 'NotFoundRoute'};
+var _user$project$Routing$ShowContactRoute = function (a) {
+	return {ctor: 'ShowContactRoute', _0: a};
+};
+var _user$project$Routing$HomeIndexRoute = {ctor: 'HomeIndexRoute'};
+var _user$project$Routing$matchers = _evancz$url_parser$UrlParser$oneOf(
+	{
+		ctor: '::',
+		_0: A2(
+			_evancz$url_parser$UrlParser$map,
+			_user$project$Routing$HomeIndexRoute,
+			_evancz$url_parser$UrlParser$s('')),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_evancz$url_parser$UrlParser$map,
+				_user$project$Routing$ShowContactRoute,
+				A2(
+					_evancz$url_parser$UrlParser_ops['</>'],
+					_evancz$url_parser$UrlParser$s('contacts'),
+					_evancz$url_parser$UrlParser$int)),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Routing$parse = function (location) {
+	var _p1 = A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Routing$matchers, location);
+	if (_p1.ctor === 'Just') {
+		return _p1._0;
+	} else {
+		return _user$project$Routing$NotFoundRoute;
+	}
+};

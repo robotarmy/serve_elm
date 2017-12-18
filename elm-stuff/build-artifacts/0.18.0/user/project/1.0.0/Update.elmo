@@ -1,0 +1,138 @@
+var _user$project$Update$urlUpdate = function (model) {
+	var _p0 = model.route;
+	switch (_p0.ctor) {
+		case 'HomeIndexRoute':
+			var _p1 = model.contactList;
+			if (_p1.ctor === 'NotRequested') {
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{
+						ctor: '::',
+						_0: A2(_user$project$Commands$fetch, 1, ''),
+						_1: {ctor: '[]'}
+					});
+			} else {
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{ctor: '[]'});
+			}
+		case 'ShowContactRoute':
+			return A2(
+				_elm_lang$core$Platform_Cmd_ops['!'],
+				_elm_lang$core$Native_Utils.update(
+					model,
+					{contact: _user$project$Model$Requesting}),
+				{
+					ctor: '::',
+					_0: _user$project$Commands$fetchContact(_p0._0),
+					_1: {ctor: '[]'}
+				});
+		default:
+			return A2(
+				_elm_lang$core$Platform_Cmd_ops['!'],
+				model,
+				{ctor: '[]'});
+	}
+};
+var _user$project$Update$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
+			case 'FetchResult':
+				if (_p2._0.ctor === 'Ok') {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								contactList: _user$project$Model$Success(_p2._0._0)
+							}),
+						{ctor: '[]'});
+				} else {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								contactList: _user$project$Model$Failure('Something went wrong...')
+							}),
+						{ctor: '[]'});
+				}
+			case 'Paginate':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{
+						ctor: '::',
+						_0: A2(_user$project$Commands$fetch, _p2._0, model.search),
+						_1: {ctor: '[]'}
+					});
+			case 'HandleSearchInput':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{search: _p2._0}),
+					{ctor: '[]'});
+			case 'HandleFormSubmit':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{contactList: _user$project$Model$Requesting}),
+					{
+						ctor: '::',
+						_0: A2(_user$project$Commands$fetch, 1, model.search),
+						_1: {ctor: '[]'}
+					});
+			case 'ResetSearch':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{search: ''}),
+					{
+						ctor: '::',
+						_0: A2(_user$project$Commands$fetch, 1, ''),
+						_1: {ctor: '[]'}
+					});
+			case 'UrlChange':
+				var currentRoute = _user$project$Routing$parse(_p2._0);
+				return _user$project$Update$urlUpdate(
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{route: currentRoute}));
+			case 'NavigateTo':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{
+						ctor: '::',
+						_0: _elm_lang$navigation$Navigation$newUrl(
+							_user$project$Routing$toPath(_p2._0)),
+						_1: {ctor: '[]'}
+					});
+			default:
+				if (_p2._0.ctor === 'Ok') {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								contact: _user$project$Model$Success(_p2._0._0)
+							}),
+						{ctor: '[]'});
+				} else {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								contact: _user$project$Model$Failure('Contact not found')
+							}),
+						{ctor: '[]'});
+				}
+		}
+	});

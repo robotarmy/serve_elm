@@ -1,0 +1,43 @@
+Arguments: 
+  /Users/o_o/.nvm/versions/node/v8.9.3/bin/node /Users/o_o/.nvm/versions/node/v8.9.3/bin/yarn run
+
+PATH: 
+  /Users/o_o/.nvm/versions/node/v8.9.3/bin:/Users/o_o/.rbenv/shims:/Users/o_o/.rbenv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/heroku/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/o_o/.local/bin:/Users/o_o/dev/go/bin:/Users/o_o/Script/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/sbin:/usr/X11/bin:/Users/o_o/Script/:/usr/local/share/npm/bin:/usr/local/lib/luarocks/bin:/Users/o_o/Hack/devkitpro/devkitARM/bin:/Users/o_o/opt/bin
+
+Yarn version: 
+  1.3.2
+
+Node version: 
+  8.9.3
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  {
+        "repository": {},
+        "license": "MIT",
+        "scripts": {
+          "build-production": "",
+          "watch": ""
+        }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  TypeError: "file" argument must be a non-empty string
+      at normalizeSpawnArguments (child_process.js:383:11)
+      at Object.exports.spawn (child_process.js:496:38)
+      at default (/Users/o_o/.nvm/versions/node/v8.9.3/lib/node_modules/yarn/lib/cli.js:29936:24)
+      at new Promise (<anonymous>)
+      at new F (/Users/o_o/.nvm/versions/node/v8.9.3/lib/node_modules/yarn/lib/cli.js:29389:28)
+      at queue.push (/Users/o_o/.nvm/versions/node/v8.9.3/lib/node_modules/yarn/lib/cli.js:29935:32)
+      at run (/Users/o_o/.nvm/versions/node/v8.9.3/lib/node_modules/yarn/lib/cli.js:38604:7)
+      at BlockingQueue.maybePushConcurrencyQueue (/Users/o_o/.nvm/versions/node/v8.9.3/lib/node_modules/yarn/lib/cli.js:38619:7)
+      at BlockingQueue.shift (/Users/o_o/.nvm/versions/node/v8.9.3/lib/node_modules/yarn/lib/cli.js:38614:10)
+      at default (/Users/o_o/.nvm/versions/node/v8.9.3/lib/node_modules/yarn/lib/cli.js:38563:14)

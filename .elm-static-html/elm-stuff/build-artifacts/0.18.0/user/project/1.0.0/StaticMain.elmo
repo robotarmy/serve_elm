@@ -1,0 +1,15 @@
+var _user$project$StaticMain$decodeModel = _user$project$Decoders$contactListDecoder;
+var _user$project$StaticMain$model = function () {
+	var location = {href: '', host: '0.0.0.0', hostname: 'localhost', protocol: 'http', origin: '', port_: '4000', pathname: '/', search: '', hash: '', username: '', password: ''};
+	var route = _user$project$Routing$parse(location);
+	return _user$project$Model$initialModel(route);
+}();
+var _user$project$StaticMain$view = _user$project$View$view(_user$project$StaticMain$model);
+var _user$project$StaticMain$viewWithModel = function (contactList) {
+	return _user$project$View$view(
+		_elm_lang$core$Native_Utils.update(
+			_user$project$StaticMain$model,
+			{
+				contactList: _user$project$Model$Success(contactList)
+			}));
+};
