@@ -38,7 +38,7 @@ defmodule ServeElm.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:execjs, git: "git@github.com:devinus/execjs.git", branch: "master"},
+      {:execjs, git: "git@github.com:robotarmy/execjs.git", branch: "master"},
 
     ]
   end
