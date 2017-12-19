@@ -12,3 +12,7 @@ The original Elm code is from phoenix-and-elm (https://github.com/bigardone/phoe
 
 I wrote a shim in Elm called StaticMain that represents a wrapper for the view execution.
 
+Modifications to execjs were made in these files:
+
+deps/execjs/priv/node_runner.js.eex
+deps/execjs/lib/execjs.ex
