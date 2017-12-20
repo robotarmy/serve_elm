@@ -36,7 +36,7 @@ defmodule ServeElmWeb.Worker do
               {:missing, nil}
             x ->
               {:ok, x}
-    end
+          end
     {:reply, ret, state}
   end
 
@@ -49,98 +49,137 @@ defmodule ServeElmWeb.Worker do
     {:reply, {status, data } , new_state}
   end
 
+  def run_elm_program do
+    generate_model()
+    |> Poison.encode!
+    |> render_template
+    |> Execjs.compile
+    |> Execjs.call("ElmRender", [])
+  end
 
   def execute_render(_name) do
-    context =  Execjs.compile(render_template())
-    json = Execjs.call(context, "ElmRender", [])
+    json_output = run_elm_program()
     result = cond do
-      json["error"] != nil ->
-       {:error,  json["error"]}
-      json["error"] == nil ->
-       {:ok, json["html"]}
+      json_output["error"] != nil ->
+        {:error,  json_output["error"]}
+      json_output["error"] == nil ->
+        {:ok, json_output["html"]}
     end
   end
 
-  def render_template do
+  def generate_contacts do
+    [
+      #Elm : Model.Contact 
+      %{
+        id: 333,
+        first_name: "Robot Army",
+        last_name: "Made",
+        gender: 3,
+        birth_date: "11/20/1979",
+        location: "home",
+        phone_number: "222-222-2222",
+        email: "robotarmy@ram9.cc",
+        headline: "RAM9.CC",
+        picture: "https://avatars0.githubusercontent.com/u/178963?s=400&v=4"
+      },
+      %{
+        id: 123,
+        first_name: "Jaine",
+        last_name: "Smitherson",
+        gender: 3,
+        birth_date: "11/20/1983",
+        location: "mt rushmore",
+        phone_number: "333-333-3333",
+        email: "js@rushmore.com",
+        headline: "Nice Person",
+        picture: "https://t6.rbxcdn.com/cd18c724efadc4e7a3220c2f098b6420"
+      },
+      %{
+        id: 1333,
+        first_name: "Toodles",
+        last_name: "Kapital",
+        gender: 3,
+        birth_date: "11/20/1983",
+        location: "wiggle",
+        phone_number: "444-333-3333",
+        email: "cat@kap.com",
+        headline: "Cat Sitter",
+        picture: "https://t6.rbxcdn.com/cd18c724efadc4e7a3220c2f098b6420"
+      },
+      %{
+        id: 1311,
+        first_name: "Boosh",
+        last_name: "Sop",
+        gender: 3,
+        birth_date: "11/20/1983",
+        location: "Dartmouth",
+        phone_number: "444-55-3331",
+        email: "boo@sop.net",
+        headline: "Bitcoin Collector",
+        picture: "https://t6.rbxcdn.com/cd18c724efadc4e7a3220c2f098b6420"
+      }
+    ]
+  end
+  def generate_model do
+    contacts = generate_contacts()
+    %{
+      # Elm List (Model.Contact)
+      entries: contacts,
+      page_number: 1,
+      total_entries: length(contacts),
+      total_pages: 1
+    }
+  end
+
+  def render_template(model_as_json_string) do
     """
 
-const elmStaticHtml = require("/Users/o_o/devhome/serve_elm/node_modules/elm-static-html-lib").default;
+    const elmStaticHtml = require("/Users/o_o/devhome/serve_elm/node_modules/elm-static-html-lib").default;
 
-async function __elm_render__() {
+    async function __elm_render__() {
 
     // globals: process (node)
     global.document = global.document || {};
     global.document.location = global.document.location || {
-        hash: "",
-        host: "",
-        hostname: "",
-        href: "",
-        origin: "",
-        pathname: "",
-        port: "",
-        protocol: "",
-        search: "",
+    hash: "",
+    host: "",
+    hostname: "",
+    href: "",
+    origin: "",
+    pathname: "",
+    port: "",
+    protocol: "",
+    search: "",
     };
 
 
 
     const options = {
-        model: { // Model.ContactList
-            entries: [
-                // Model.Contact
-                {
-                    id: 333,
-                    first_name: "Robot Army",
-                    last_name: "Made",
-                    gender: 3,
-                    birth_date: "11/20/1979",
-                    location: "home",
-                    phone_number: "222-222-2222",
-                    email: "robotarmy@ram9.cc",
-                    headline: "RAM9.CC",
-                    picture: "https://avatars0.githubusercontent.com/u/178963?s=400&v=4"
-                }, {
-                    id: 123,
-                    first_name: "Jaine",
-                    last_name: "Smitherson",
-                    gender: 3,
-                    birth_date: "11/20/1983",
-                    location: "mt rushmore",
-                    phone_number: "333-333-3333",
-                    email: "js@rushmore.com",
-                    headline: "Nice Person",
-                    picture: "https://t6.rbxcdn.com/cd18c724efadc4e7a3220c2f098b6420"
-                }
-            ],
-            page_number: 1,
-            total_entries: 2,
-            total_pages: 1
-
-        }
-      , decoder: "StaticMain.decodeModel"
+      model: #{model_as_json_string}
+    , decoder: "StaticMain.decodeModel"
     };
     let myerror = null;
     let result  = "empty";
     try {
-    result = await new Promise(function(resolve, reject) {
-    elmStaticHtml("/Users/o_o/devhome/serve_elm",
-    "StaticMain.viewWithModel",
-    options).then(function(html) {
-    resolve(html);
-    //console.log(html)
-    });
-    });
-    } catch(error) {
-    myerror = error;
-    console.log("ERROR:"+error)
+      result = await new Promise(
+      function(resolve, reject) {
+        elmStaticHtml("/Users/o_o/devhome/serve_elm",
+                      "StaticMain.viewWithModel",
+                      options).then(function(html) {
+        resolve(html);
+      });
+      }
+     );
+     } catch(error) {
+      myerror = error;
+      console.log("ERROR:"+error)
+     }
+      return {error: myerror, html:result};
     }
-    return {error: myerror, html:result};
-}
-function ElmRender() {
-  const a = __elm_render__();
-  console.log("elm render")
-  return a;
-}
-"""
+
+    function ElmRender() {
+     return __elm_render__();
+    }
+    """
   end
 end

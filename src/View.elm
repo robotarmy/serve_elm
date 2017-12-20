@@ -27,7 +27,7 @@ headerView =
         [ class "main-header" ]
         [ h1
             []
-            [ text "Phoenix and Elm: A real use case" ]
+            [ text "ELM PROGRAM" ]
         ]
 
 

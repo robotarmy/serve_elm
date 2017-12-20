@@ -53,14 +53,21 @@ async function __render__() {
         decoder: "StaticMain.decodeModel"
     };
     try {
-    return await new Promise(function(resolve, reject) {
-        elmStaticHtml("/Users/o_o/devhome/serve_elm",
-                      "StaticMain.viewWithModel",
-                      options).then(function(html) {
-                          resolve(html);
-			  console.log(html);
-                      });
-    });
+        return await new Promise(function(resolve, reject) {
+
+
+
+            elmStaticHtml("/Users/o_o/devhome/serve_elm"
+                          , "StaticMain.viewWithModel"
+                          , options
+                         ).then(function(html) {
+                             resolve(html);
+			                       console.log(html);
+                         });
+
+
+
+        });
     } catch(error) {
         console.log("ERROR:"+error)
     }

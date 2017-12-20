@@ -24,7 +24,7 @@ var _user$project$View$headerView = A2(
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text('Phoenix and Elm: A real use case'),
+				_0: _elm_lang$html$Html$text('ELM PROGRAM'),
 				_1: {ctor: '[]'}
 			}),
 		_1: {ctor: '[]'}
