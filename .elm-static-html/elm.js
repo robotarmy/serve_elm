@@ -11838,8 +11838,7 @@ var _user$project$StaticMain$model = function () {
 	var route = _user$project$Routing$parse(location);
 	return _user$project$Model$initialModel(route);
 }();
-var _user$project$StaticMain$view = _user$project$View$view(_user$project$StaticMain$model);
-var _user$project$StaticMain$viewWithModel = function (contactList) {
+var _user$project$StaticMain$view = function (contactList) {
 	return _user$project$View$view(
 		_elm_lang$core$Native_Utils.update(
 			_user$project$StaticMain$model,
@@ -11848,48 +11847,48 @@ var _user$project$StaticMain$viewWithModel = function (contactList) {
 			}));
 };
 
-var _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$options = _elm_lang$core$Native_Utils.update(
+var _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$options = _elm_lang$core$Native_Utils.update(
 	_eeue56$elm_html_in_elm$ElmHtml_ToString$defaultFormatOptions,
 	{newLines: true, indent: 4});
-var _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$asJsonView = _user$project$Native_Jsonify.stringify;
-var _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$decode = function (view) {
+var _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$asJsonView = _user$project$Native_Jsonify.stringify;
+var _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$decode = function (view) {
 	var _p0 = A2(
 		_elm_lang$core$Json_Decode$decodeValue,
 		_eeue56$elm_html_in_elm$ElmHtml_InternalTypes$decodeElmHtml,
-		_user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$asJsonView(view));
+		_user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$asJsonView(view));
 	if (_p0.ctor === 'Err') {
 		return A2(_elm_lang$core$Basics_ops['++'], 'ERROR:', _p0._0);
 	} else {
-		return A2(_eeue56$elm_html_in_elm$ElmHtml_ToString$nodeToStringWithOptions, _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$options, _p0._0);
+		return A2(_eeue56$elm_html_in_elm$ElmHtml_ToString$nodeToStringWithOptions, _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$options, _p0._0);
 	}
 };
-var _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$htmlOut423af06d5326eac851ea30e6ddf46216 = _elm_lang$core$Native_Platform.outgoingPort(
-	'htmlOut423af06d5326eac851ea30e6ddf46216',
+var _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$htmlOutef19abcd484c249fb42d9301440e34a7 = _elm_lang$core$Native_Platform.outgoingPort(
+	'htmlOutef19abcd484c249fb42d9301440e34a7',
 	function (v) {
 		return v;
 	});
-var _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$init = function (values) {
+var _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$init = function (values) {
 	var _p1 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$StaticMain$decodeModel, values);
 	if (_p1.ctor === 'Err') {
 		return {
 			ctor: '_Tuple2',
 			_0: {ctor: '_Tuple0'},
-			_1: _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$htmlOut423af06d5326eac851ea30e6ddf46216(
+			_1: _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$htmlOutef19abcd484c249fb42d9301440e34a7(
 				A2(_elm_lang$core$Basics_ops['++'], 'ERROR:', _p1._0))
 		};
 	} else {
 		return {
 			ctor: '_Tuple2',
 			_0: {ctor: '_Tuple0'},
-			_1: _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$htmlOut423af06d5326eac851ea30e6ddf46216(
-				_user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$decode(
-					_user$project$StaticMain$viewWithModel(_p1._0)))
+			_1: _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$htmlOutef19abcd484c249fb42d9301440e34a7(
+				_user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$decode(
+					_user$project$StaticMain$view(_p1._0)))
 		};
 	}
 };
-var _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$main = _elm_lang$core$Platform$programWithFlags(
+var _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$main = _elm_lang$core$Platform$programWithFlags(
 	{
-		init: _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$init,
+		init: _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$init,
 		update: F2(
 			function (_p2, b) {
 				return {ctor: '_Tuple2', _0: b, _1: _elm_lang$core$Platform_Cmd$none};
@@ -11900,9 +11899,9 @@ var _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$main = _elm_lang$c
 	})(_elm_lang$core$Json_Decode$value);
 
 var Elm = {};
-Elm['PrivateMain423af06d5326eac851ea30e6ddf46216'] = Elm['PrivateMain423af06d5326eac851ea30e6ddf46216'] || {};
-if (typeof _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$main !== 'undefined') {
-    _user$project$PrivateMain423af06d5326eac851ea30e6ddf46216$main(Elm['PrivateMain423af06d5326eac851ea30e6ddf46216'], 'PrivateMain423af06d5326eac851ea30e6ddf46216', undefined);
+Elm['PrivateMainef19abcd484c249fb42d9301440e34a7'] = Elm['PrivateMainef19abcd484c249fb42d9301440e34a7'] || {};
+if (typeof _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$main !== 'undefined') {
+    _user$project$PrivateMainef19abcd484c249fb42d9301440e34a7$main(Elm['PrivateMainef19abcd484c249fb42d9301440e34a7'], 'PrivateMainef19abcd484c249fb42d9301440e34a7', undefined);
 }
 
 if (typeof define === "function" && define['amd'])

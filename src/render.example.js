@@ -58,7 +58,7 @@ async function __render__() {
 
 
             elmStaticHtml("/Users/o_o/devhome/serve_elm"
-                          , "StaticMain.viewWithModel"
+                          , "StaticMain.view"
                           , options
                          ).then(function(html) {
                              resolve(html);

@@ -138,7 +138,11 @@ defmodule ServeElmWeb.Worker do
 
     async function __elm_render__() {
 
-    // globals: process (node)
+
+    //
+    // Contruct a representation for location
+    //
+    //
     global.document = global.document || {};
     global.document.location = global.document.location || {
     hash: "",
@@ -164,7 +168,7 @@ defmodule ServeElmWeb.Worker do
       result = await new Promise(
       function(resolve, reject) {
         elmStaticHtml("/Users/o_o/devhome/serve_elm",
-                      "StaticMain.viewWithModel",
+                      "StaticMain.view",
                       options).then(function(html) {
         resolve(html);
       });
