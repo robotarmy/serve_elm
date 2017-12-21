@@ -12,6 +12,8 @@ defmodule ServeElm.Application do
       supervisor(ServeElmWeb.Endpoint, []),
       # Start your own worker by calling: ServeElm.Worker.start_link(arg1, arg2, arg3)
       worker(ServeElmWeb.Worker, []),
+      supervisor(ServeElm.Presence, []),
+
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
