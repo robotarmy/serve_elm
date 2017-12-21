@@ -49,13 +49,6 @@ defmodule ServeElmWeb.Worker do
     {:reply, {status, data } , new_state}
   end
 
-  def run_elm_program do
-    generate_model()
-    |> Poison.encode!
-    |> render_template
-    |> Execjs.compile
-    |> Execjs.call("ElmRender", [])
-  end
 
   def execute_render(_name) do
     json_output = run_elm_program()
@@ -66,6 +59,17 @@ defmodule ServeElmWeb.Worker do
         {:ok, json_output["html"]}
     end
   end
+
+  def run_elm_program do
+    generate_model()
+    |> Poison.encode!
+    |> render_template
+    |> Execjs.compile
+    |> Execjs.call("ElmRender", [])
+  end
+
+
+
 
   def generate_contacts do
     [
@@ -132,9 +136,13 @@ defmodule ServeElmWeb.Worker do
   end
 
   def render_template(model_as_json_string) do
+    elm_static_html_lib_path = Path.expand("../../node_modules/elm-static-html-lib", __DIR__)
+    serve_elm_dir = Path.expand("../../",__DIR__)
+    js_elm_render_function = "StaticMain.view"
+    js_elm_decode_function = "StaticMain.decodeModel"
     """
 
-    const elmStaticHtml = require("/Users/o_o/devhome/serve_elm/node_modules/elm-static-html-lib").default;
+    const elmStaticHtml = require("#{elm_static_html_lib_path}").default;
 
     async function __elm_render__() {
 
@@ -160,15 +168,15 @@ defmodule ServeElmWeb.Worker do
 
     const options = {
       model: #{model_as_json_string}
-    , decoder: "StaticMain.decodeModel"
+    , decoder: "#{js_elm_decode_function}"
     };
     let myerror = null;
     let result  = "empty";
     try {
       result = await new Promise(
       function(resolve, reject) {
-        elmStaticHtml("/Users/o_o/devhome/serve_elm",
-                      "StaticMain.view",
+        elmStaticHtml("#{serve_elm_dir}",
+                      "#{js_elm_render_function}",
                       options).then(function(html) {
         resolve(html);
       });
