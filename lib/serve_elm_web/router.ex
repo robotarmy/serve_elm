@@ -17,12 +17,12 @@ defmodule ServeElmWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    get "/main", PageController, :main
     get "/cached", PageController, :cached
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", ServeElmWeb do
-  #   pipe_through :api
-  # end
+   scope "/api", ServeElmWeb do
+    pipe_through :api
+    resources "/contacts", ContactController, only: [:index]
+   end
 end
