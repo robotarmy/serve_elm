@@ -25,11 +25,18 @@
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
-      <main role="main">
+      <main role="main" id="root">
         <%= render @view_module, @view_template, assigns %>
       </main>
 
     </div> <!-- /container -->
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script>
+     if (Elm && Elm.Main) {
+       setTimeout(function() {
+         Elm.Main.embed(document.getElementById('root'));
+       }, 1)
+      }
+    </script>
   </body>
 </html>

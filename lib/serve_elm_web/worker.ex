@@ -49,13 +49,6 @@ defmodule ServeElmWeb.Worker do
     {:reply, {status, data } , new_state}
   end
 
-  def run_elm_program do
-    generate_model()
-    |> Poison.encode!
-    |> render_template
-    |> Execjs.compile
-    |> Execjs.call("ElmRender", [])
-  end
 
   def execute_render(_name) do
     json_output = run_elm_program()
@@ -66,6 +59,17 @@ defmodule ServeElmWeb.Worker do
         {:ok, json_output["html"]}
     end
   end
+
+  def run_elm_program do
+    generate_model()
+    |> Poison.encode!
+    |> render_template
+    |> Execjs.compile
+    |> Execjs.call("ElmRender", [])
+  end
+
+
+
 
   def generate_contacts do
     [
