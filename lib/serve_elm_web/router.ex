@@ -23,6 +23,6 @@ defmodule ServeElmWeb.Router do
   # Other scopes may use custom stacks.
    scope "/api", ServeElmWeb do
     pipe_through :api
-    resources "/contacts", ContactController, only: [:index]
+    resources "/contacts", ContactController, only: [:index, :show]
    end
 end
