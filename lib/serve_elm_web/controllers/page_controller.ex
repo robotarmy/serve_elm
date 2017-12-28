@@ -3,13 +3,13 @@ defmodule ServeElmWeb.PageController do
 
 
   def index(conn, _params) do
-    case ServeElmWeb.Worker.render("index") do
-      {:error, {_, error, _}} ->
-        text conn, error
-      {:ok, {name, html, age}} ->
-        render conn, "index.html",
-          %{name: name, html: html}
-    end
+    #case ServeElmWeb.Worker.render("index") do
+    #  {:error, {_, error, _}} ->
+    #    text conn, error
+    #  {:ok, {name, html, age}} ->
+        render conn, "index.html"#,
+    #      %{name: name, html: html}
+    #end
   end
 
 

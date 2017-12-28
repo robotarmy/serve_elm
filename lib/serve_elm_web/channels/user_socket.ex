@@ -2,7 +2,7 @@ defmodule ServeElmWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", ServeElmWeb.RoomChannel
+  channel "presence:*", ServeElmWeb.Prescience
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
