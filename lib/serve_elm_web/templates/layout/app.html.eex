@@ -8,9 +8,10 @@
     <meta name="author" content="">
 
     <title>Hello ServeElm!</title>
-    <%=  inline_script(@conn, "/js/phoenix.js")  %>
-    <%= inline_script(@conn, "/js/app.js") %>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <%#= script(@conn, "/js/phoenix.js")  %>
+    <%= inline_script(@conn, "/js/presence.js") %>
+    <%= script(@conn, "/js/main.js") %>
 
   </head>
 
@@ -28,19 +29,24 @@
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
-      <main role="main" id="root">
+      <main role="prerender" id="prerender">
         <%= render @view_module, @view_template, assigns %>
+      </main>
+
+      <main role="postrender" id="postrender" style="display:none">
       </main>
 
     </div> <!-- /container -->
 
 
-    <script>
+ </body>
+ <script>
      if (Elm && Elm.Main) {
-       setTimeout(function() {
-         Elm.Main.embed(document.getElementById('root'));
+     setTimeout(function() {
+     document.getElementById('prerender').style = "display:none;"
+     document.getElementById('postrender').style = ""
+     Elm.Main.embed(document.getElementById('postrender'));
        }, 1)
       }
     </script>
-  </body>
-</html>
+ </html>

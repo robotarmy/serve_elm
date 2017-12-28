@@ -1,5 +1,9 @@
 defmodule ServeElmWeb.LayoutView do
   use ServeElmWeb, :view
+  def script(conn, path) do
+    path = static_path(conn,path)
+    content_tag(:script, "", src: path)
+  end
   def inline_script(conn, path) do
     path = Path.expand(
       "../../../priv/static/#{path}",
