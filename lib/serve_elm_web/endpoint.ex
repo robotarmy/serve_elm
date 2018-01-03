@@ -35,8 +35,9 @@ defmodule ServeElmWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_serve_elm_key",
-    signing_salt: "9W1QAR4s"
+    key: "_serve_elm_session_key_",
+    signing_salt: "9W1QAR4s123",
+    encryption_salt: "90x2600hqv0711"
 
   plug ServeElmWeb.Router
 

@@ -2,23 +2,30 @@ defmodule ServeElmWeb.Prescience do
   use ServeElmWeb, :channel
   alias ServeElm.Presence
 
-  def join("some:topic", _params, socket) do
+  def join(_, _params, socket) do
+    send(self(), :register_join)
     send(self(), :after_join)
-    {:ok, assign(socket, :user_id, "value")}
+    {:ok, socket}
+  end
+
+  def handle_info(:register_join, socket) do
+    push socket, "register:self", socket.assigns.user
+    {:noreply, socket}
   end
 
   def handle_info(:after_join, socket) do
-    push socket, "presence_state", Presence.list(socket)
-    {:ok, _} = Presence.track(socket, socket.assigns.user_id, %{
-          online_at: inspect(System.system_time(:seconds))
-                              })
+    {:ok, _} = Presence.track(
+      socket, socket.assigns.user.id, %{
+        user_ref: socket.assigns.user.id
+      }
+    )
     {:noreply, socket}
   end
 
   def fetch(_topic, entries) do
-    meta = 
-      %{fetch: %{_topic: _topic, entries: entries }}
-      IO.inspect meta
+    IO.inspect "fetch"
+    meta = %{fetch: %{_topic: _topic, entries: entries }}
+    IO.inspect meta
 
     users = %{"123": %{ metas: [ meta ] } }
 

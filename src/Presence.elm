@@ -1,17 +1,37 @@
 port module Presence exposing (..)
 
+import Dict
 import Phoenix.Socket
 import Phoenix.Channel
 import Phoenix.Push
-import Json.Encode exposing (Value)
+import Phoenix.Presence exposing (PresenceState, syncState, syncDiff, presenceStateDecoder, presenceDiffDecoder)
+import Json.Decode exposing (decodeValue)
+import Json.Encode exposing (Value, string, object)
 import Debug exposing (log)
 
 
-port elmInbox : (Value -> msg) -> Sub msg
+port presenceInbox : (Value -> msg) -> Sub msg
+
+
+port identityInbox : Value -> Cmd msg
+
+
+type alias Identity =
+    { id : String
+    , token : String
+    , created_online_at : String
+    }
+
+
+type alias UserPresence =
+    { phx_ref : String
+    , user_ref : String
+    }
 
 
 type alias Model =
     { socket : Phoenix.Socket.Socket Msg
+    , phxPresences : PresenceState UserPresence
     }
 
 
@@ -19,6 +39,7 @@ type Msg
     = PhoenixMsg (Phoenix.Socket.Msg Msg)
     | JSMessage Value
     | ReceiveMessage Value
+    | RegisterSelf Value
 
 
 socketServer : String
@@ -31,12 +52,8 @@ initSocket : Phoenix.Socket.Socket Msg
 initSocket =
     Phoenix.Socket.init socketServer
         |> Phoenix.Socket.withDebug
-        |> Phoenix.Socket.on "presence" "homepage" receiveMessage
-
-
-receiveMessage : Value -> Msg
-receiveMessage value =
-    ReceiveMessage value
+        |> Phoenix.Socket.on "incoming" "presence:elm" ReceiveMessage
+        |> Phoenix.Socket.on "register:self" "presence:elm" RegisterSelf
 
 
 init : ( Model, Cmd Msg )
@@ -45,7 +62,11 @@ init =
         ( socket, cmd ) =
             joinChannel initSocket
     in
-        ( { socket = socket }, Cmd.map PhoenixMsg cmd )
+        ( { socket = socket
+          , phxPresences = Dict.empty
+          }
+        , Cmd.map PhoenixMsg cmd
+        )
 
 
 main =
@@ -79,12 +100,53 @@ update msg model =
             in
                 ( model, Cmd.none )
 
+        RegisterSelf value ->
+            case decodeValue identityDecoder value of
+                Ok identity ->
+                    let
+                        sendIdentityCmd =
+                            identityInbox
+                                (object
+                                    [ ( "id"
+                                      , string identity.id
+                                      )
+                                    , ( "created_online_at"
+                                      , string identity.created_online_at
+                                      )
+                                    , ( "token"
+                                      , string identity.token
+                                      )
+                                    ]
+                                )
+
+                        loopBackCmd =
+                            Cmd.none
+                    in
+                        ( model
+                        , Cmd.batch [ sendIdentityCmd, loopBackCmd ]
+                        )
+
+                Err error ->
+                    let
+                        _ =
+                            Debug.log "Error[RegisterSelf]" error
+                    in
+                        model ! []
+
+
+identityDecoder : Json.Decode.Decoder Identity
+identityDecoder =
+    Json.Decode.map3 Identity
+        (Json.Decode.field "id" Json.Decode.string)
+        (Json.Decode.field "token" Json.Decode.string)
+        (Json.Decode.field "created_online_at" Json.Decode.string)
+
 
 joinChannel : Phoenix.Socket.Socket Msg -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
 joinChannel aSocket =
     let
         channel =
-            Phoenix.Channel.init "homepage"
+            Phoenix.Channel.init "presence:elm"
     in
         Phoenix.Socket.join channel aSocket
 
@@ -103,6 +165,6 @@ updatePhoenixMsg model msg =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ elmInbox JSMessage
+        [ presenceInbox JSMessage
         , Phoenix.Socket.listen model.socket PhoenixMsg
         ]

@@ -32,14 +32,21 @@ defmodule ServeElm.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, path: "../phoenix", override: true},
+      {
+        :phoenix,
+       git: "git@github.com:phoenixframework/phoenix",
+       branch: "master",
+       override: true
+      },
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:execjs, git: "git@github.com:robotarmy/execjs.git", branch: "master"},
       {:cowboy, "~> 2.1", override: true},
-      {:plug, "~> 1.5-rc0", override: true}
+      {:plug, "~> 1.5-rc0", override: true},
+      {:json_web_token, "~> 0.2.5"},
+      { :uuid, "~> 1.1" } 
     ]
   end
 end

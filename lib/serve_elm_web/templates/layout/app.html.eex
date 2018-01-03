@@ -9,8 +9,16 @@
 
     <title>Hello ServeElm!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
-    <%#= script(@conn, "/js/phoenix.js")  %>
     <%= inline_script(@conn, "/js/presence.js") %>
+    <script>
+     window.elmPresenceWorker = Elm.Presence.worker();
+
+     window.elmPresenceWorker.ports.identityInbox.subscribe(function(identity){
+         window.localStorage.setItem("identity",identity);
+         console.log("I just learned that my name is ",identity);
+     })
+
+    </script>
     <%= script(@conn, "/js/main.js") %>
 
   </head>
