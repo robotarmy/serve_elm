@@ -6883,6 +6883,198 @@ var _fbonetti$elm_phoenix_socket$Phoenix_Channel$init = function (name) {
 	return {name: name, payload: _fbonetti$elm_phoenix_socket$Phoenix_Helpers$emptyPayload, state: _fbonetti$elm_phoenix_socket$Phoenix_Channel$Closed, onClose: _elm_lang$core$Maybe$Nothing, onError: _elm_lang$core$Maybe$Nothing, onJoin: _elm_lang$core$Maybe$Nothing, onJoinError: _elm_lang$core$Maybe$Nothing, joinRef: -1, leaveRef: -1};
 };
 
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$merge = F6(
+	function (leftStep, bothStep, rightStep, leftDict, rightDict, initialResult) {
+		var stepState = F3(
+			function (rKey, rValue, _p0) {
+				stepState:
+				while (true) {
+					var _p1 = _p0;
+					var _p7 = _p1._1;
+					var _p6 = _p1._0;
+					var _p2 = _p6;
+					if (_p2.ctor === '[]') {
+						return {
+							ctor: '_Tuple2',
+							_0: _p6,
+							_1: A3(rightStep, rKey, rValue, _p7)
+						};
+					} else {
+						var _p5 = _p2._1;
+						var _p4 = _p2._0._1;
+						var _p3 = _p2._0._0;
+						if (_elm_lang$core$Native_Utils.cmp(_p3, rKey) < 0) {
+							var _v2 = rKey,
+								_v3 = rValue,
+								_v4 = {
+								ctor: '_Tuple2',
+								_0: _p5,
+								_1: A3(leftStep, _p3, _p4, _p7)
+							};
+							rKey = _v2;
+							rValue = _v3;
+							_p0 = _v4;
+							continue stepState;
+						} else {
+							if (_elm_lang$core$Native_Utils.cmp(_p3, rKey) > 0) {
+								return {
+									ctor: '_Tuple2',
+									_0: _p6,
+									_1: A3(rightStep, rKey, rValue, _p7)
+								};
+							} else {
+								return {
+									ctor: '_Tuple2',
+									_0: _p5,
+									_1: A4(bothStep, _p3, _p4, rValue, _p7)
+								};
+							}
+						}
+					}
+				}
+			});
+		var _p8 = A3(
+			_elm_lang$core$Dict$foldl,
+			stepState,
+			{
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Dict$toList(leftDict),
+				_1: initialResult
+			},
+			rightDict);
+		var leftovers = _p8._0;
+		var intermediateResult = _p8._1;
+		return A3(
+			_elm_lang$core$List$foldl,
+			F2(
+				function (_p9, result) {
+					var _p10 = _p9;
+					return A3(leftStep, _p10._0, _p10._1, result);
+				}),
+			intermediateResult,
+			leftovers);
+	});
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$syncState = F2(
+	function (newState, state) {
+		return newState;
+	});
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$list = function (mapper) {
+	return function (_p11) {
+		return _elm_lang$core$Dict$values(
+			A2(_elm_lang$core$Dict$map, mapper, _p11));
+	};
+};
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$listDefault = _elm_lang$core$Dict$values;
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceStateMetaWrapper = function (a) {
+	return {metas: a};
+};
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$syncDiff = F2(
+	function (diff, state) {
+		var mergeJoins = F2(
+			function (left, right) {
+				var inBoth = F4(
+					function (key, leftValue, rightValue, acc) {
+						return A3(
+							_elm_lang$core$Dict$insert,
+							key,
+							_fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceStateMetaWrapper(
+								A2(_elm_lang$core$Basics_ops['++'], leftValue.metas, rightValue.metas)),
+							acc);
+					});
+				return A6(_fbonetti$elm_phoenix_socket$Phoenix_Presence$merge, _elm_lang$core$Dict$insert, inBoth, _elm_lang$core$Dict$insert, left, right, _elm_lang$core$Dict$empty);
+			});
+		var mergeLeaves = F3(
+			function (leaves, key, currentMetaWrapper) {
+				var _p12 = A2(_elm_lang$core$Dict$get, key, leaves);
+				if (_p12.ctor === 'Nothing') {
+					return currentMetaWrapper;
+				} else {
+					var leftRefs = A2(
+						_elm_lang$core$List$map,
+						function (_) {
+							return _.phx_ref;
+						},
+						_p12._0.metas);
+					return _fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceStateMetaWrapper(
+						A2(
+							_elm_lang$core$List$filter,
+							function (metaValue) {
+								return !A2(
+									_elm_lang$core$List$any,
+									function (phx_ref) {
+										return _elm_lang$core$Native_Utils.eq(metaValue.phx_ref, phx_ref);
+									},
+									leftRefs);
+							},
+							currentMetaWrapper.metas));
+				}
+			});
+		return A2(
+			_elm_lang$core$Dict$filter,
+			F2(
+				function (_p13, metaWrapper) {
+					return !_elm_lang$core$Native_Utils.eq(
+						metaWrapper.metas,
+						{ctor: '[]'});
+				}),
+			A2(
+				_elm_lang$core$Dict$map,
+				mergeLeaves(diff.leaves),
+				A2(mergeJoins, diff.joins, state)));
+	});
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceStateMetaValue = F2(
+	function (a, b) {
+		return {phx_ref: a, payload: b};
+	});
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceStateMetaDecoder = function (payloadDecoder) {
+	var createFinalRecord = F2(
+		function (phxRef, payload) {
+			return _elm_lang$core$Json_Decode$succeed(
+				A2(_fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceStateMetaValue, phxRef, payload));
+		});
+	var decodeWithPhxRef = function (phxRef) {
+		return A2(
+			_elm_lang$core$Json_Decode$andThen,
+			createFinalRecord(phxRef),
+			payloadDecoder);
+	};
+	return A2(
+		_elm_lang$core$Json_Decode$andThen,
+		decodeWithPhxRef,
+		A2(_elm_lang$core$Json_Decode$field, 'phx_ref', _elm_lang$core$Json_Decode$string));
+};
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceStateMetaWrapperDecoder = function (payloadDecoder) {
+	return A2(
+		_elm_lang$core$Json_Decode$map,
+		_fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceStateMetaWrapper,
+		A2(
+			_elm_lang$core$Json_Decode$field,
+			'metas',
+			_elm_lang$core$Json_Decode$list(
+				_fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceStateMetaDecoder(payloadDecoder))));
+};
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceStateDecoder = function (payloadDecoder) {
+	return _elm_lang$core$Json_Decode$dict(
+		_fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceStateMetaWrapperDecoder(payloadDecoder));
+};
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceDiff = F2(
+	function (a, b) {
+		return {leaves: a, joins: b};
+	});
+var _fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceDiffDecoder = function (payloadDecoder) {
+	return A3(
+		_elm_lang$core$Json_Decode$map2,
+		_fbonetti$elm_phoenix_socket$Phoenix_Presence$PresenceDiff,
+		A2(
+			_elm_lang$core$Json_Decode$field,
+			'leaves',
+			_fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceStateDecoder(payloadDecoder)),
+		A2(
+			_elm_lang$core$Json_Decode$field,
+			'joins',
+			_fbonetti$elm_phoenix_socket$Phoenix_Presence$presenceStateDecoder(payloadDecoder)));
+};
+
 var _fbonetti$elm_phoenix_socket$Phoenix_Push$map = F2(
 	function (fn, push) {
 		return _elm_lang$core$Native_Utils.update(
@@ -7413,9 +7605,26 @@ var _fbonetti$elm_phoenix_socket$Phoenix_Socket$listen = F2(
 	});
 
 var _user$project$Presence$joinChannel = function (aSocket) {
-	var channel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('homepage');
+	var channel = _fbonetti$elm_phoenix_socket$Phoenix_Channel$init('presence:elm');
 	return A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$join, channel, aSocket);
 };
+var _user$project$Presence$socketServer = 'wss://localhost:4430/socket/websocket';
+var _user$project$Presence$presenceInbox = _elm_lang$core$Native_Platform.incomingPort('presenceInbox', _elm_lang$core$Json_Decode$value);
+var _user$project$Presence$identityInbox = _elm_lang$core$Native_Platform.outgoingPort(
+	'identityInbox',
+	function (v) {
+		return v;
+	});
+var _user$project$Presence$Identity = F3(
+	function (a, b, c) {
+		return {id: a, token: b, created_online_at: c};
+	});
+var _user$project$Presence$identityDecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_user$project$Presence$Identity,
+	A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'token', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'created_online_at', _elm_lang$core$Json_Decode$string));
 var _user$project$Presence$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
@@ -7426,29 +7635,90 @@ var _user$project$Presence$update = F2(
 			case 'ReceiveMessage':
 				var a = A2(_elm_lang$core$Debug$log, 'receivemessage', _p0._0);
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			default:
+			case 'JSMessage':
 				var a = A2(_elm_lang$core$Debug$log, 'jsmessage', _p0._0);
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			default:
+				var _p1 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Presence$identityDecoder, _p0._0);
+				if (_p1.ctor === 'Ok') {
+					var _p2 = _p1._0;
+					var loopBackCmd = _elm_lang$core$Platform_Cmd$none;
+					var sendIdentityCmd = _user$project$Presence$identityInbox(
+						_elm_lang$core$Json_Encode$object(
+							{
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: 'id',
+									_1: _elm_lang$core$Json_Encode$string(_p2.id)
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: 'created_online_at',
+										_1: _elm_lang$core$Json_Encode$string(_p2.created_online_at)
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: 'token',
+											_1: _elm_lang$core$Json_Encode$string(_p2.token)
+										},
+										_1: {ctor: '[]'}
+									}
+								}
+							}));
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _elm_lang$core$Platform_Cmd$batch(
+							{
+								ctor: '::',
+								_0: sendIdentityCmd,
+								_1: {
+									ctor: '::',
+									_0: loopBackCmd,
+									_1: {ctor: '[]'}
+								}
+							})
+					};
+				} else {
+					var _p3 = A2(_elm_lang$core$Debug$log, 'Error[RegisterSelf]', _p1._0);
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						model,
+						{ctor: '[]'});
+				}
 		}
 	});
-var _user$project$Presence$socketServer = 'wss://localhost:4430/socket/websocket';
-var _user$project$Presence$elmInbox = _elm_lang$core$Native_Platform.incomingPort('elmInbox', _elm_lang$core$Json_Decode$value);
-var _user$project$Presence$Model = function (a) {
-	return {socket: a};
+var _user$project$Presence$UserPresence = F2(
+	function (a, b) {
+		return {phx_ref: a, user_ref: b};
+	});
+var _user$project$Presence$Model = F2(
+	function (a, b) {
+		return {socket: a, phxPresences: b};
+	});
+var _user$project$Presence$RegisterSelf = function (a) {
+	return {ctor: 'RegisterSelf', _0: a};
 };
 var _user$project$Presence$ReceiveMessage = function (a) {
 	return {ctor: 'ReceiveMessage', _0: a};
 };
-var _user$project$Presence$receiveMessage = function (value) {
-	return _user$project$Presence$ReceiveMessage(value);
-};
 var _user$project$Presence$initSocket = A4(
 	_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
-	'presence',
-	'homepage',
-	_user$project$Presence$receiveMessage,
-	_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-		_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(_user$project$Presence$socketServer)));
+	'register:self',
+	'presence:elm',
+	_user$project$Presence$RegisterSelf,
+	A4(
+		_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
+		'incoming',
+		'presence:elm',
+		_user$project$Presence$ReceiveMessage,
+		_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
+			_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(_user$project$Presence$socketServer))));
 var _user$project$Presence$JSMessage = function (a) {
 	return {ctor: 'JSMessage', _0: a};
 };
@@ -7456,23 +7726,23 @@ var _user$project$Presence$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
 };
 var _user$project$Presence$init = function () {
-	var _p1 = _user$project$Presence$joinChannel(_user$project$Presence$initSocket);
-	var socket = _p1._0;
-	var cmd = _p1._1;
+	var _p4 = _user$project$Presence$joinChannel(_user$project$Presence$initSocket);
+	var socket = _p4._0;
+	var cmd = _p4._1;
 	return {
 		ctor: '_Tuple2',
-		_0: {socket: socket},
+		_0: {socket: socket, phxPresences: _elm_lang$core$Dict$empty},
 		_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Presence$PhoenixMsg, cmd)
 	};
 }();
 var _user$project$Presence$updatePhoenixMsg = F2(
 	function (model, msg) {
-		var _p2 = A2(
+		var _p5 = A2(
 			_fbonetti$elm_phoenix_socket$Phoenix_Socket$update,
 			A2(_elm_lang$core$Debug$log, 'msg', msg),
 			model.socket);
-		var phxSocket = _p2._0;
-		var phxCmd = _p2._1;
+		var phxSocket = _p5._0;
+		var phxCmd = _p5._1;
 		return {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.update(
@@ -7485,7 +7755,7 @@ var _user$project$Presence$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{
 			ctor: '::',
-			_0: _user$project$Presence$elmInbox(_user$project$Presence$JSMessage),
+			_0: _user$project$Presence$presenceInbox(_user$project$Presence$JSMessage),
 			_1: {
 				ctor: '::',
 				_0: A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$listen, model.socket, _user$project$Presence$PhoenixMsg),

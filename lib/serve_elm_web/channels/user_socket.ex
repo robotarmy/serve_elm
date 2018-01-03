@@ -2,10 +2,13 @@ defmodule ServeElmWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "presence:*", ServeElmWeb.Prescience
+  channel "presence:elm", ServeElmWeb.Prescience
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket
+  transport :websocket, Phoenix.Transports.WebSocket,
+    check_origin: ["https://localhost:4430"]
+  ## force v2 shows issue in elm socket client
+  ##           serializer: [{Phoenix.Transports.V2.WebSocketSerializer, "~> 2.0.0"}]
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can
@@ -19,8 +22,13 @@ defmodule ServeElmWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(params, socket) do
+    id = "https://my.indiegogo.com/identity/#{UUID.uuid4()}"
+    {:ok, assign(socket, :user, %{
+            id: id,
+            created_online_at: inspect(System.system_time(:seconds)),
+            token: Phoenix.Token.sign(socket, "12312341salt", id),
+                 })}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -33,5 +41,5 @@ defmodule ServeElmWeb.UserSocket do
   #     ServeElmWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: socket.assigns.user.id
 end
