@@ -7,11 +7,9 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :serve_elm, ServeElmWeb.Endpoint,
-  https: [ keyfile: "priv/keys/localhost.key",
-           certfile: "priv/keys/localhost.cert",
-           port: 4430,
-           compress: true,
-           dispatch: [
+  http: [ port: 4000,
+          compress: true,
+          dispatch: [
             {:_, [
                 {"/phoenix/live_reload/socket/websocket", Phoenix.Endpoint.Cowboy2WebSocket,
                  {Phoenix.Transports.WebSocket,
@@ -21,12 +19,29 @@ config :serve_elm, ServeElmWeb.Endpoint,
                   {ServeElmWeb.Endpoint, ServeElmWeb.UserSocket, :websocket}}},
                 {:_, Plug.Adapters.Cowboy2.Handler, {ServeElmWeb.Endpoint, []}}
               ]}
+          ]
+        ],
+  https: [ keyfile: "priv/keys/localhost.key",
+           certfile: "priv/keys/localhost.cert",
+           port: 4430,
+           compress: true,
+           dispatch: [
+             {:_, [
+                 {"/phoenix/live_reload/socket/websocket", Phoenix.Endpoint.Cowboy2WebSocket,
+                  {Phoenix.Transports.WebSocket,
+                   {ServeElmWeb.Endpoint, Phoenix.LiveReloader.Socket, :websocket}}},
+                 {"/socket/websocket", Phoenix.Endpoint.Cowboy2WebSocket,
+                  {Phoenix.Transports.WebSocket,
+                   {ServeElmWeb.Endpoint, ServeElmWeb.UserSocket, :websocket}}},
+                 {:_, Plug.Adapters.Cowboy2.Handler, {ServeElmWeb.Endpoint, []}}
+               ]}
            ]
          ],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
   watchers: []
+
 
 # ## SSL Support
 #

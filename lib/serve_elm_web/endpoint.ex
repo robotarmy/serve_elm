@@ -1,6 +1,7 @@
 defmodule ServeElmWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :serve_elm
 
+
   socket "/socket", ServeElmWeb.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
@@ -19,16 +20,22 @@ defmodule ServeElmWeb.Endpoint do
     plug Phoenix.CodeReloader
   end
 
+  plug Corsica,  origins: "http://localhost:3000", allow_credentials: true, log: [rejected: :info, accepted: false]
+
+
+
   plug Plug.RequestId
   plug Plug.Logger
+
 
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Poison
-
   plug Plug.MethodOverride
   plug Plug.Head
+
+
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -38,6 +45,7 @@ defmodule ServeElmWeb.Endpoint do
     key: "_serve_elm_session_key_",
     signing_salt: "9W1QAR4s123",
     encryption_salt: "90x2600hqv0711"
+
 
   plug ServeElmWeb.Router
 

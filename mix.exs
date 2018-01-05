@@ -19,7 +19,7 @@ defmodule ServeElm.Mixfile do
   def application do
     [
       mod: {ServeElm.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :corsica]
     ]
   end
 
@@ -46,7 +46,8 @@ defmodule ServeElm.Mixfile do
       {:cowboy, "~> 2.1", override: true},
       {:plug, "~> 1.5-rc0", override: true},
       {:json_web_token, "~> 0.2.5"},
-      { :uuid, "~> 1.1" } 
+      { :uuid, "~> 1.1" } ,
+	{:corsica, "~> 1.0"}	
     ]
   end
 end
