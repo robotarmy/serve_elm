@@ -29,4 +29,9 @@ defmodule ServeElmWeb.PageController do
         render conn, "index.html", %{name: "#{name} (cached@#{age})", html: html}
     end
   end
+
+  def validate_customer(conn, _params) do
+    render conn, "customer.json", %{}
+  end
+
 end

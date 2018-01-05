@@ -24,5 +24,7 @@ defmodule ServeElmWeb.Router do
    scope "/api", ServeElmWeb do
     pipe_through :api
     resources "/contacts", ContactController, only: [:index, :show]
+    post "/validate/customer", PageController, :validate_customer
+    get "/validate/customer" , PageController, :validate_customer
    end
 end
